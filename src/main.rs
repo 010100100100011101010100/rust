@@ -1,3 +1,6 @@
+//include is use in rust
+use std::fs::read_to_string;
+
 fn main(){
     let _ans1=is_even(10);
     println!("{}",_ans1);
@@ -6,7 +9,27 @@ fn main(){
     println!("{}",_ans2);
     let _ans3=get_len(name);
     println!("the length of the string is {}",_ans3);
-}
+    let circle=Shape::Circle(1.0);
+    println!("{}",print_area(circle));
+
+
+    let index=find_first_a(String::from("rasesh"));
+
+    match index{
+        CustomOption::Some(value)=> println!("The index is {}", value),
+        CustomOption::None=> println!("a not found in the string")
+    }
+
+
+
+
+    let result=fs::read_to_string("a.txt");
+    match result {
+        Ok(data)=> println!(data),
+        Err(err)=>println!("The error is {:?}",err)
+    }
+
+} 
 
 
 //i32,i64 is signed number
@@ -42,24 +65,48 @@ fn get_len(str:String)->usize{
 }
 
 
-struct User<'a>{
-    first:&'astr,
-    last:&'astr,
-    age:i32
+//enum with asociated values
+enum Shape{
+    Circle(f64),
+    Rectangle(f64,f64)
 }
 
-impl User<'_>{
-    fn print(&self) {
-        println!("{}",self.first +" "+self.last);
+
+
+//we can get the values of the associated values in enum with pattern matching 
+//match keyword
+fn print_area(shape:Shape) -> f64 {
+     match shape{
+        Shape::Rectangle(a,b)=>a*b,
+        Shape::Circle(r)=> std::f64::consts::PI * r* r,
     }
-
+    //this has implicit return, no semi colon in the end
 }
 
-fn main(){
-    let rasesh= User{
-        first:"Rasesh",
-        last:"Gautam",
-        age:19
-    };
-    rasesh.print();
+
+
+
+
+enum CustomOption{
+    Some(i32),
+    None,
 }
+
+
+//option enum with Some and None for return None or any specified type (in this example I have created a custom option)
+//<t> is generic type
+fn find_first_a(string:String)->CustomOption{
+    for(index,char) in string.chars().enumerate(){
+        if char=='a'{
+            return CustomOption::Some(index as i32);
+        }
+    }
+    return CustomOption::None;
+}
+
+
+//result enum is used for error handling 
+//result enum can have two values OK and ERROR
+
+//function to read the contents of another file, it will return an enum of Type RESULT
+
